@@ -1,23 +1,19 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Header from "./components/Header.jsx";
-import Home from "./pages/Home.jsx";
-import CountryPage from "./pages/CountryPage.jsx";
-import NotFound from "./pages/NotFound.jsx";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import CountryPage from "./pages/CountryPage";
+import "./App.css";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Header />
+    <Router>
+      <Routes>
+        {/* Home Page */}
+        <Route path="/" element={<Home />} />
 
-      <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/country/:name" element={<CountryPage />} />
-          <Route path="/favourites" element={<div>Favourites Page</div>} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </main>
-    </BrowserRouter>
+        {/* Country Detail Page (IMPORTANT: use :code) */}
+        <Route path="/country/:code" element={<CountryPage />} />
+      </Routes>
+    </Router>
   );
 }
 
