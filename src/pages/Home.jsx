@@ -27,7 +27,7 @@ function Home() {
     fetchCountries();
   }, [query]);
 
-  // ✅ Derived state (IMPORTANT)
+  // ✅ Derived state
   const displayed = [...countries]
     .filter((c) => region === "All" || c.region === region)
     .sort((a, b) => {
