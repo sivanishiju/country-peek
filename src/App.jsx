@@ -18,3 +18,7 @@ function App() {
 }
 
 export default App;
+import Favourites from "./pages/Favourites";
+
+// replace old route with this:
+<Route path="/favourites" element={<Favourites />} />
