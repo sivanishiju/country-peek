@@ -9,7 +9,6 @@ export function ThemeProvider({ children }) {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   }
 
-  // Sync theme with body attribute
   useEffect(() => {
     if (theme === "dark") {
       document.body.setAttribute("data-theme", "dark");
@@ -25,7 +24,6 @@ export function ThemeProvider({ children }) {
   );
 }
 
-// custom hook
 export function useTheme() {
   return useContext(ThemeContext);
 }
