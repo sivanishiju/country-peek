@@ -1,33 +1,22 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function useCountry(code) {
   const [country, setCountry] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    if (!code) return;
-
     const fetchCountry = async () => {
       try {
-        setLoading(true);
-        setError(null);
-
-        const res = await fetch(`https://restcountries.com/v3.1/alpha/${code}`);
-
-        if (!res.ok) {
-          throw new Error("Failed to fetch country");
-        }
-
+        const res = await fetch(
+          `https://restcountries.com/v3.1/alpha/${code}`
+        );
         const data = await res.json();
-
-        // IMPORTANT: API returns array
         setCountry(data[0]);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+      } catch {
+        setError(true);
       }
+      setLoading(false);
     };
 
     fetchCountry();

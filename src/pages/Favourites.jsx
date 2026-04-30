@@ -1,24 +1,12 @@
-import { Link } from "react-router-dom";
-import { useFavourites } from "../context/FavouritesContext";
-import CountryCard from "../components/CountryCard";
-
 function Favourites() {
-  const { favourites } = useFavourites();
+  const favs = JSON.parse(localStorage.getItem("favs")) || [];
 
-  // ✅ Empty state
-  if (favourites.length === 0) {
-    return (
-      <div className="favourites-empty">
-        <h2>No favourites yet 💔</h2>
-        <Link to="/">Go explore countries</Link>
-      </div>
-    );
-  }
+  if (favs.length === 0) return <p>No favourites yet.</p>;
 
   return (
     <div className="cards-grid">
-      {favourites.map((country) => (
-        <CountryCard key={country.cca3} country={country} />
+      {favs.map((c) => (
+        <div key={c.cca3}>{c.name.common}</div>
       ))}
     </div>
   );

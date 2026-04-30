@@ -1,18 +1,30 @@
-import { useTheme } from "../context/ThemeContext";
+import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { ThemeContext } from "../context/ThemeContext";
 
 function Header() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useContext(ThemeContext);
 
   return (
-    <header className="header">
-      <h1>Country Explorer</h1>
+    <div className="header">
+      <h2>CountryPeek</h2>
 
-      <nav className="header__nav">
-        <button className="theme-toggle" onClick={toggleTheme}>
-          {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
-        </button>
+      <nav>
+        <Link to="/">Home</Link>
+        <Link to="/favourites">Favourites</Link>
       </nav>
-    </header>
+
+      <button
+        onClick={toggleTheme}
+        aria-label={
+          theme === "light"
+            ? "Switch to dark mode"
+            : "Switch to light mode"
+        }
+      >
+        Toggle Theme
+      </button>
+    </div>
   );
 }
 

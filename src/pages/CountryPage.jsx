@@ -1,84 +1,22 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import useCountry from "../hooks/useCountry";
-import "../styles/App.css";
 
 function CountryPage() {
   const { code } = useParams();
-  const navigate = useNavigate();
-
   const { country, loading, error } = useCountry(code);
 
-  if (loading) {
-    return <p className="page-status">Loading...</p>;
-  }
-
-  if (error) {
-    return <p className="page-status page-status--error">{error}</p>;
-  }
-
-  if (!country) return null;
-
-  const {
-    name,
-    flags,
-    population,
-    region,
-    subregion,
-    capital,
-    languages,
-    currencies,
-    borders,
-  } = country;
-
-  const languageList = languages ? Object.values(languages) : [];
-  const currencyList = currencies
-    ? Object.values(currencies).map((c) => c.name)
-    : [];
+  if (loading) return <p>Loading...</p>;
+  if (error || !country) return <p>Country not found.</p>;
 
   return (
-    <div className="country-page">
-      <button className="back-btn" onClick={() => navigate(-1)}>
-        ← Back
-      </button>
+    <div className="country-page__layout">
+      <img src={country.flags.svg} alt={country.name.common} />
 
-      <div className="country-page__layout">
-        <img
-          src={flags.svg}
-          alt={name.common}
-          className="country-page__flag"
-        />
-
-        <div className="country-page__info">
-          <h2 className="country-page__name">{name.common}</h2>
-          <p className="country-page__official">{name.official}</p>
-
-          <div className="country-page__details">
-            <div>
-              <p><strong>Population:</strong> {population.toLocaleString()}</p>
-              <p><strong>Region:</strong> {region}</p>
-              <p><strong>Subregion:</strong> {subregion}</p>
-              <p><strong>Capital:</strong> {capital?.[0] || "N/A"}</p>
-            </div>
-
-            <div>
-              <p><strong>Languages:</strong> {languageList.join(", ")}</p>
-              <p><strong>Currencies:</strong> {currencyList.join(", ")}</p>
-            </div>
-          </div>
-
-          {borders && borders.length > 0 && (
-            <div>
-              <strong>Borders:</strong>
-              <div>
-                {borders.map((b) => (
-                  <span key={b} className="border-badge">
-                    {b}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+      <div>
+        <h2>{country.name.common}</h2>
+        <p>Capital: {country.capital?.[0] ?? "N/A"}</p>
+        <p>Region: {country.region}</p>
+        <p>Subregion: {country.subregion ?? "N/A"}</p>
       </div>
     </div>
   );
