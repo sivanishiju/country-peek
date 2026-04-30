@@ -1,67 +1,58 @@
 import { useState, useEffect } from "react";
 import SearchBar from "../components/SearchBar";
 import CountryCard from "../components/CountryCard";
-import FilterBar from "../components/FilterBar";
 
 function Home() {
   const [query, setQuery] = useState("");
   const [countries, setCountries] = useState([]);
-
-  const [region, setRegion] = useState("All");
-  const [sortBy, setSortBy] = useState("");
+  const [favs, setFavs] = useState(
+    JSON.parse(localStorage.getItem("favs")) || []
+  );
 
   useEffect(() => {
-    if (!query) {
-      setCountries([]);
-      return;
-    }
+    localStorage.setItem("favs", JSON.stringify(favs));
+  }, [favs]);
 
-    async function fetchCountries() {
+  useEffect(() => {
+    if (!query.trim()) return;
+
+    const fetchData = async () => {
       const res = await fetch(
         `https://restcountries.com/v3.1/name/${query}`
       );
       const data = await res.json();
-      setCountries(data);
-    }
+      setCountries(data || []);
+    };
 
-    fetchCountries();
+    const timer = setTimeout(fetchData, 500);
+    return () => clearTimeout(timer);
   }, [query]);
 
-  // ✅ Derived state
-  const displayed = [...countries]
-    .filter((c) => region === "All" || c.region === region)
-    .sort((a, b) => {
-      if (sortBy === "name") {
-        return a.name.common.localeCompare(b.name.common);
-      }
-      if (sortBy === "population") {
-        return b.population - a.population;
-      }
-      return 0;
-    });
+  const toggleFav = (country) => {
+    const exists = favs.find((c) => c.cca3 === country.cca3);
+    if (exists) {
+      setFavs(favs.filter((c) => c.cca3 !== country.cca3));
+    } else {
+      setFavs([...favs, country]);
+    }
+  };
 
   return (
-    <div className="home">
-      <SearchBar query={query} onQueryChange={setQuery} />
+    <div>
+      <SearchBar query={query} setQuery={setQuery} />
 
-      <FilterBar
-        region={region}
-        onRegionChange={setRegion}
-        sortBy={sortBy}
-        onSortChange={setSortBy}
-      />
+      {countries.length === 0 && query && <p>No countries found.</p>}
 
-      {countries.length === 0 ? (
-        <p className="home__placeholder">
-          Start searching to explore countries.
-        </p>
-      ) : (
-        <div className="cards-grid">
-          {displayed.map((country) => (
-            <CountryCard key={country.cca3} country={country} />
-          ))}
-        </div>
-      )}
+      <div className="cards-grid">
+        {countries.map((c) => (
+          <CountryCard
+            key={c.cca3}
+            country={c}
+            toggleFav={toggleFav}
+            isSaved={favs.some((f) => f.cca3 === c.cca3)}
+          />
+        ))}
+      </div>
     </div>
   );
 }
